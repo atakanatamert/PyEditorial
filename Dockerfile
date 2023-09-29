@@ -15,3 +15,9 @@ RUN python manage.py migrate --run-syncdb
 
 # static
 RUN python manage.py collectstatic --noinput
+
+# run gunicorn
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "PyEditorial.wsgi:application"]
+
+EXPOSE 8000
+
