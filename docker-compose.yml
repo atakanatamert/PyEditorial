@@ -1,11 +1,30 @@
-version: "3.6"
+version: "3.7"
 
 services:
-  web:
+  py-editorial-web:
     build:
       context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./:/code
     ports:
       - "8000:8000"
+    env_file:
+      - ./.env
+    volumes:
+      - ./:/code
+    depends_on:
+      - py-editorial-db
+  py-editorial-proxy:
+    build:
+      context: ./nginx/
+    ports:
+      - "80:80"
+    depends_on:
+      - py-editorial-web
+      - py-editorial-db
+  py-editorial-db:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.postgres.env
+volumes:
+  postgres_data:
