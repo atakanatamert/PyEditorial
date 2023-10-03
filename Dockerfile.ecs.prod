@@ -1,0 +1,33 @@
+# Attempt to create a single deployment container for ECS
+
+FROM ubuntu:latest
+
+RUN apt-get update
+
+RUN apt-get install -y python3.10
+
+RUN apt-get install -y nginx
+
+RUN apt-get install -y python3-pip
+
+RUN pip install --upgrade pip
+
+WORKDIR /app
+
+COPY . .
+
+COPY ./nginx/nginx.conf /etc/nginx/conf.d
+
+# Install requirements
+RUN pip install -r requirements.txt
+
+EXPOSE 8000
+
+# Make runtime script executable
+RUN chmod +x runtime.sh
+
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+
+# Execute commands in runtime, fetching env variables and running gunicorn
+ENTRYPOINT ["./runtime.sh"]
+
