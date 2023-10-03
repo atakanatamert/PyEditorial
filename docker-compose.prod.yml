@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  py-editorial-web:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    volumes:
+      - ./:/code
+  py-editorial-proxy:
+    build:
+      context: ./nginx/
+    ports:
+      - "80:80"
+    depends_on:
+      - py-editorial-web
