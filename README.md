@@ -1,114 +1,59 @@
 # PyEditorial
+
 A free, open-source Blog CMS based on the "Django" and "Editorial" HTML5 theme.
 
-![](https://img.shields.io/github/stars/mavenium/PyEditorial) 
-[![](https://img.shields.io/github/forks/mavenium/PyEditorial)](https://github.com/mavenium/PyEditorial/fork)
-[![](https://img.shields.io/github/issues/mavenium/PyEditorial)](https://github.com/mavenium/PyEditorial/issues)
-![](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fmavenium%2FPyEditorial)
+---
 
-------------
-### Features
+### Example Deployment Fork
 
-- "Blog" section to create and edit a blog + Blog Category
-- "Videocast" section to create and edit a videocast + Videocast Category
-- "Podcast" section to create and edit a podcast + podcast Category
-- "Skill" section to create and edit a skill
-- "CONSTANCE" Section to manage dynamic Django settings (Blog title, Social Networks links and ...)
-- Displays the list of Blog posts as paged in archive
-- Displays the list of Videocast as paged in archive
-- Displays the list of podcast as paged in archive
-- Used "Django Admin" to manage all models
-- Used "Editorial" theme by HTML5 UP
-- Used "Sqlite" to create DB
-- Used "CKEditor"
-- Translation ready
-- Auth system (login & logout and forget a password)
-- Front-end forms to create new object
-------------
-[![](https://s16.picofile.com/file/8419124942/buy_me_a_coffee.png)](https://www.blockchain.com/btc/payment_request?address=1ChqZPGhxpn6HB1WuQh55S3Mf8RydxMiFk&amount=0.00018711 "Buy me a coffee")
-- You can buy me a coffee so I can turn it into more open source projects :)
-------------
-### Special Thanks
+- Deployment uses Gunicorn, Nginx and PostgreSQL. Each running on its own container.
+- Project has 2 environment files for configuration:
+  - **.env:** t is used to configure web application. To connect external database, change POSTGRES_HOST and to change default user change DJANGO_SUPERUSER variables.
+  - **.postgres.env:** It is used to configure Postgres database.
 
-| Python | Django | Pycharm |
-| ------------- | ------------- | ------------- |
-| [![](https://s17.picofile.com/file/8418101118/python.png)](https://www.python.org "Python")  | [![](https://s17.picofile.com/file/8418100976/django.png)](https://www.djangoproject.com "Django")  | [![](https://s17.picofile.com/file/8418101034/pycharm.png)](https://www.jetbrains.com/pycharm/ "Pycharm")  |
+---
 
-------------
-### Screenshots
+### Run with Docker (GNU/Linux and Mac)
 
-![](https://raw.githubusercontent.com/mavenium/PyEditorial/master/Screenshots/Index.png)
-> Index Page
+1. Make sure that docker is installed
 
-![](https://raw.githubusercontent.com/mavenium/PyEditorial/master/Screenshots/Archive.png)
-> Archive Page
+2. Go to project directory `cd PyEditorial`
 
-![](https://raw.githubusercontent.com/mavenium/PyEditorial/master/Screenshots/Blog-Single.png)
-> Blog Single Page
+3. Make local script executable `chmod +x ./local.sh`
 
-![](https://raw.githubusercontent.com/mavenium/PyEditorial/master/Screenshots/Podcast-Single.png)
-> Podcast Single Page
+4. Run `./local.sh`
 
-![](https://raw.githubusercontent.com/mavenium/PyEditorial/master/Screenshots/Videocast-Single.png)
-> Videocast Single Page
+5. Project should be available on `localhost` and test user (username: admin, password: admin) can be used.
 
-![](https://raw.githubusercontent.com/mavenium/PyEditorial/master/Screenshots/Admin.png)
-> Admin Area
+6. To close the application, run `docker compose down`
 
-![](https://raw.githubusercontent.com/mavenium/PyEditorial/master/Screenshots/Constance.png)
-> Dynamic Django Settings
+---
 
-![](https://raw.githubusercontent.com/mavenium/PyEditorial/master/Screenshots/Blog-Admin.png)
-> Blog Section
+### EC2 Deployment Steps
 
-![](https://raw.githubusercontent.com/mavenium/PyEditorial/master/Screenshots/Add-Blog.png)
-> Add Blog
+1. Deployment can change depending on the db type: Internal(Container) or External(RDS). If internal, development compose file can be used as a base. Otherwise, use `docker-compose.prod.yml`, it will not deploy a postgres container.
 
-![](https://raw.githubusercontent.com/mavenium/PyEditorial/master/Screenshots/Add-Videocast.png)
-> Add Videocast
+2. Provision an EC2 instance (i.e Ubuntu) with an User Data or SSH into the instance and execute commands manually.
 
-![](https://github.com/mavenium/PyEditorial/blob/master/Screenshots/Add-Skill.png)
-> Add Skill
+Example User Data:
 
-![](https://raw.githubusercontent.com/mavenium/PyEditorial/master/Screenshots/Add-Podcast.png)
-> Add Podcast
-
-------------
-### How to install and run (GNU/Linux and Mac)
-                
-1. Install `git`,`python3`, `pip3`, `virtualenv` in your operating system
-2. Create a development environment ready by using these commands
 ```
-git clone https://github.com/mavenium/PyEditorial		# clone the project
-cd PyEditorial		                                        # go to the project DIR
-virtualenv -p python3 .venv		                        # Create virtualenv named .venv
-source .venv/bin/activate		                        # Active virtualenv named .venv
-pip install -r requirements.txt		                        # Install project requirements in .venv
-python manage.py makemigrations		                        # Create migrations files
-python manage.py migrate		                        # Create database tables
-python manage.py collectstatic		                        # Create statics files
-python manage.py runserver		                        # Run the project
+sudo snap install docker
+git clone https://github.com/atakanatamert/PyEditorial.git
+sudo docker compose build
+sudo docker compose up -d
 ```
-3. Go to  `http://127.0.0.1:8000/` to use project
-------------
-------------
-### Run with Docker
 
-1. Install Docker on your operating system
-2. Install docker-compose on your operating system
-3. Run the following command to create and run the project
-```
-docker-compose up [-d]
-```
-3. Go to  `http://127.0.0.1:8000/` to use project
-------------
+3. Deploy RDS instance and connect it to the EC2 instance. Make sure that security groups on both sides enable TCP communication on port 5432.
+
+4. Modify the `.postgres.env` file. Make sure to include the appropriate host.
+
+5. Create an application load balancer. Traffic will be served through that. Also attach an appropriate security group that enables https traffic/redirect http to https.
+
+6. Make sure to enable http/https traffic to the instance security group. Source will be the ALB-SG.
+
+7. Finally, attach hostname and certificate to the ALB. It can be done via Route 53 and ACM.
 
 ### Notes
-The Editorial template is released under license "Creative Commons Attribution 3.0 Unported".
 
-------------
-### TODO list
-
-- [x] Create search section
-- [x] Create user Login/Logout forms in front-end
-- [x] Create dynamic forms to add contents in front-end
+- Currently it is not possible to deploy this project in ECS via Ubuntu images. The tasks will not run properly. Single container deployment can be a solution but it has its downsides. `Dockerfile.ecs.prod` can be a good starting point and any pr's to fix it are welcomed
